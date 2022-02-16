@@ -9,7 +9,7 @@ export const create = handler(async (event) => {
         TableName: process.env.TABLE_NAME,
         Item: {
             id: uuid.v1(),
-            email: data.emailId,
+            email: event.requestContext.authorizer.iam.cognitoIdentity.identityId,
             full_name: data.name,
             age: data.age,
             created_at: new Date(),
@@ -25,7 +25,8 @@ export const get = handler(async (event) => {
     const params = {
         TableName: process.env.TABLE_NAME,
         Key: {
-            email: event.pathParameters.emailId,
+            email: event.requestContext.authorizer.iam.cognitoIdentity.identityId,
+            full_name: event.pathParameters.name,
         }
     };
 
@@ -38,11 +39,11 @@ export const get = handler(async (event) => {
     return userData.Item;
 });
 
-export const getAll = handler(async() => {
+export const getAll = handler(async(event) => {
     const params = {
         TableName: process.env.TABLE_NAME,
         KeyConditionExpression: 'email = :email',
-        ExpressionAttributeValues: { ":email": "rb@abc.com" },
+        ExpressionAttributeValues: { ":email":  event.requestContext.authorizer.iam.cognitoIdentity.identityId},
     }
 
     const allUsers = await dynamoDb.query(params);
@@ -59,7 +60,7 @@ export const update = handler(async(event) => {
     const params = {
         TableName: process.env.TABLE_NAME,
         Key: {
-            email: data.emailId,
+            email: event.requestContext.authorizer.iam.cognitoIdentity.identityId,
         },
         UpdateExpression: 'SET age = :age',
         ExpressionAttributeValues: {

@@ -9,6 +9,7 @@ export default class ApiStack extends sst.Stack {
         const { table } = props;
 
         this.api = new sst.Api(this, 'Api', {
+            defaultAuthorizationType: 'AWS_IAM',
             defaultFunctionProps: {
                 environment: {
                     TABLE_NAME: table.tableName,
@@ -16,7 +17,7 @@ export default class ApiStack extends sst.Stack {
             },
             routes: {
                 'POST   /user': 'src/user.create',
-                'GET    /user/{emailId}': 'src/user.get',
+                'GET    /user/{name}': 'src/user.get',
                 'GET    /user/getAll': 'src/user.getAll',
                 'PUT    /user': 'src/user.update',
                 'DELETE /user/{emailId}': 'src/user.deleteRecord',

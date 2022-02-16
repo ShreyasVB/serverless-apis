@@ -6,11 +6,12 @@ export default class StorageStack extends sst.Stack {
     constructor (scope, id, props) {
         super (scope, id, props);
 
-        this.table = new sst.Table(this, 'userInfo', {
+        this.table = new sst.Table(this, 'userData', {
             fields: {
                 email: sst.TableFieldType.STRING,
+                full_name: sst.TableFieldType.STRING,
             },
-            primaryIndex: { partitionKey: 'email' },
+            primaryIndex: { partitionKey: 'email', sortKey: 'full_name' },
         });
     }
 }
