@@ -61,6 +61,7 @@ export const update = handler(async(event) => {
         TableName: process.env.TABLE_NAME,
         Key: {
             email: event.requestContext.authorizer.iam.cognitoIdentity.identityId,
+            full_name: data.name
         },
         UpdateExpression: 'SET age = :age',
         ExpressionAttributeValues: {
@@ -78,7 +79,8 @@ export const deleteRecord = handler(async(event) => {
     const params = {
         TableName: process.env.TABLE_NAME,
         Key: {
-            email: event.pathParameters.emailId,
+            email: event.requestContext.authorizer.iam.cognitoIdentity.identityId,
+            full_name: event.pathParameters.emailId
         },
     };
 
